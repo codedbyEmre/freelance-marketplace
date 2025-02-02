@@ -31,12 +31,7 @@ global.localStorage = localStorageMock;
 
 // Add TextEncoder/TextDecoder to global
 global.TextEncoder = TextEncoder;
+(global as any).TextDecoder = TextDecoder;
 
-// Properly type and set TextDecoder
-declare global {
-  var TextDecoder: {
-    new (label?: string, options?: TextDecoderOptions): TextDecoder;
-    prototype: TextDecoder;
-  };
-}
-global.TextDecoder = TextDecoder as unknown as typeof global.TextDecoder;
+// Disable the no-explicit-any rule for this specific case
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
