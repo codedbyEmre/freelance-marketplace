@@ -1,16 +1,13 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { Container, Grid, Typography, Skeleton } from "@mui/material";
+import { Container, Grid, Typography, Skeleton, Box } from "@mui/material";
 import { fetchFreelancers, fetchJobs } from "../store/freelancerSlice";
 import FreelancerCard from "../components/FreelancerCard";
 import SearchFilters from "../components/SearchFilters";
 import Header from "../components/Header";
 import { useAppDispatch, useAppSelector } from "../store/store";
-
-const FreelancerCardSkeleton = () => (
-  <Skeleton variant="rectangular" height={280} sx={{ borderRadius: 1 }} />
-);
+import FreelancerCardSkeleton from "@/components/FreelancerCardSkeleton";
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -62,9 +59,8 @@ export default function Home() {
         <SearchFilters />
         <Grid container spacing={3} sx={{ mt: 2 }}>
           {isLoading
-            ? // Show skeletons while loading
-              Array.from(new Array(8)).map((_, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            ? filteredFreelancers.map((freelancer) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={freelancer.id}>
                   <FreelancerCardSkeleton />
                 </Grid>
               ))
