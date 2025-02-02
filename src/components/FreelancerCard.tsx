@@ -53,6 +53,7 @@ export default function FreelancerCard({
         <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
           <Avatar
             src={`https://i.pravatar.cc/150?u=${freelancer.id}`}
+            alt={freelancer.name}
             sx={{ width: 60, height: 60, marginRight: 1 }}
           />
           <div>

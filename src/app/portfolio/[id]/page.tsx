@@ -95,6 +95,7 @@ export default function PortfolioPage({ params }: PageProps) {
               <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
                 <Avatar
                   src={`https://i.pravatar.cc/150?u=${freelancer.id}`}
+                  alt={freelancer.name}
                   sx={{ width: 175, height: 175, mr: 3 }}
                 />
                 <Box>

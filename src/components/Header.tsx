@@ -39,7 +39,13 @@ export default function Header() {
         >
           Freelance Marketplace
         </Typography>
-        <IconButton onClick={toggleTheme} color="inherit">
+        <IconButton
+          onClick={toggleTheme}
+          color="inherit"
+          aria-label={
+            isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+          }
+        >
           {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
         </IconButton>
       </Container>
