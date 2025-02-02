@@ -33,7 +33,7 @@ export default function HireFreelancerModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    const isDarkMode = localStorage.getItem("darkMode");
     toast.success("Hiring request sent successfully!", {
       position: "top-right",
       autoClose: 5000,
@@ -41,6 +41,7 @@ export default function HireFreelancerModal({
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
+      theme: isDarkMode === "true" ? "dark" : "light",
     });
     setFormData({ name: "", subject: "", message: "" });
     onClose();

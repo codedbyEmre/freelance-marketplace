@@ -91,11 +91,18 @@ export default function PortfolioPage({ params }: PageProps) {
         ) : (
           <>
             <Paper sx={{ p: 3, mb: 4 }}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mb: 3,
+                  flexDirection: { xs: "column", sm: "row" },
+                }}
+              >
                 <Avatar
                   src={`https://i.pravatar.cc/150?u=${freelancer.id}`}
                   alt={freelancer.name}
-                  sx={{ width: 175, height: 175, mr: 3 }}
+                  sx={{ width: 200, height: 200, mr: 3 }}
                 />
                 <Box>
                   <Typography variant="h4" gutterBottom>
@@ -116,15 +123,21 @@ export default function PortfolioPage({ params }: PageProps) {
                   <Typography color="text.secondary">
                     {freelancer.address.city}, {freelancer.address.zipcode}
                   </Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setIsHireModalOpen(true)}
+                    size="small"
+                    sx={{
+                      marginTop: 2,
+                      fontSize: "16px",
+                      textTransform: "none",
+                    }}
+                  >
+                    Hire Freelancer
+                  </Button>
                 </Box>
               </Box>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setIsHireModalOpen(true)}
-              >
-                Hire Freelancer
-              </Button>
             </Paper>
 
             <Typography variant="h5" gutterBottom>

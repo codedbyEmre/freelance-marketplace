@@ -7,6 +7,7 @@ import {
   Switch,
   Box,
   Typography,
+  Grid,
 } from "@mui/material";
 import { updateSearchFilters } from "../store/freelancerSlice";
 import { useAppDispatch, useAppSelector } from "../store/store";
@@ -41,59 +42,73 @@ export default function SearchFilters() {
 
   return (
     <Paper sx={{ p: 2 }}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <TextField
-          label="Search by name"
-          variant="outlined"
-          value={filters.name}
-          onChange={handleNameChange}
-          size="small"
-          sx={{ flex: 1 }}
-        />
-        <TextField
-          label="Search by city"
-          variant="outlined"
-          value={filters.city}
-          onChange={handleCityChange}
-          size="small"
-          sx={{ flex: 1 }}
-        />
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-            Jobs:
-          </Typography>
+      <Grid container spacing={2}>
+        {/* Search by name */}
+        <Grid item xs={12} sm={6} md={3}>
           <TextField
-            label="Min"
-            type="number"
+            label="Search by name"
             variant="outlined"
-            value={filters.minJobs}
-            onChange={handleMinJobsChange}
+            value={filters.name}
+            onChange={handleNameChange}
             size="small"
-            InputProps={{ inputProps: { min: 0 } }}
-            sx={{ width: 100 }}
+            fullWidth
           />
+        </Grid>
+
+        {/* Search by city */}
+        <Grid item xs={12} sm={6} md={3}>
           <TextField
-            label="Max"
-            type="number"
+            label="Search by city"
             variant="outlined"
-            value={filters.maxJobs}
-            onChange={handleMaxJobsChange}
+            value={filters.city}
+            onChange={handleCityChange}
             size="small"
-            InputProps={{ inputProps: { min: filters.minJobs } }}
-            sx={{ width: 100 }}
+            fullWidth
           />
-        </Box>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={filters.savedOnly}
-              onChange={handleSavedOnlyChange}
+        </Grid>
+
+        {/* Job Range */}
+        <Grid item xs={12} sm={6} md={3}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+              Jobs:
+            </Typography>
+            <TextField
+              label="Min"
+              type="number"
+              variant="outlined"
+              value={filters.minJobs}
+              onChange={handleMinJobsChange}
+              size="small"
+              InputProps={{ inputProps: { min: 0 } }}
+              sx={{ width: 100 }}
             />
-          }
-          label="Show saved only"
-          sx={{ ml: 1 }}
-        />
-      </Box>
+            <TextField
+              label="Max"
+              type="number"
+              variant="outlined"
+              value={filters.maxJobs}
+              onChange={handleMaxJobsChange}
+              size="small"
+              InputProps={{ inputProps: { min: filters.minJobs } }}
+              sx={{ width: 100 }}
+            />
+          </Box>
+        </Grid>
+
+        {/* Saved Only Switch */}
+        <Grid item xs={12} sm={6} md={3}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={filters.savedOnly}
+                onChange={handleSavedOnlyChange}
+              />
+            }
+            label="Show saved only"
+          />
+        </Grid>
+      </Grid>
     </Paper>
   );
 }

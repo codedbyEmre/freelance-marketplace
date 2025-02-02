@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Freelance Marketplace",
-  description: "Find and hire talented freelancers",
+  description: "Discover and recruit skilled freelancers.",
 };
 
 export default function RootLayout({
