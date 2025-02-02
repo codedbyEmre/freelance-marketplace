@@ -5,31 +5,34 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import SearchFilters from "../SearchFilters";
 import freelancerReducer from "../../store/freelancerSlice";
+import type { RootState } from "../../store/store";
+
+const initialState: RootState = {
+  freelancer: {
+    freelancers: [],
+    savedFreelancers: [],
+    jobs: [],
+    comments: [],
+    loading: false,
+    error: null,
+    searchFilters: {
+      name: "",
+      city: "",
+      minJobs: 0,
+      maxJobs: 100,
+      savedOnly: false,
+    },
+    currentFreelancer: null,
+    currentFreelancerJobs: [],
+  },
+};
 
 const createTestStore = () =>
   configureStore({
     reducer: {
       freelancer: freelancerReducer,
     },
-    preloadedState: {
-      freelancer: {
-        freelancers: [],
-        savedFreelancers: [],
-        jobs: [],
-        comments: [],
-        loading: false,
-        error: null,
-        searchFilters: {
-          name: "",
-          city: "",
-          minJobs: 0,
-          maxJobs: 100,
-          savedOnly: false,
-        },
-        currentFreelancer: null,
-        currentFreelancerJobs: [],
-      },
-    },
+    preloadedState: initialState,
   });
 
 describe("SearchFilters", () => {
