@@ -52,34 +52,29 @@ export default function Home() {
     return nameMatch && cityMatch && jobCountMatch && savedMatch;
   });
 
-  if (isLoading) {
-    return (
-      <>
-        <Header />
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Typography variant="h5">Loading...</Typography>
-        </Container>
-      </>
-    );
-  }
-
   return (
     <>
       <Header />
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <SearchFilters />
-        <Grid container spacing={3} sx={{ mt: 2 }}>
-          {filteredFreelancers.map((freelancer) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={freelancer.id}>
-              <FreelancerCard
-                freelancer={freelancer}
-                jobCount={
-                  jobs.filter((job) => job.userId === freelancer.id).length
-                }
-              />
-            </Grid>
-          ))}
-        </Grid>
+        {isLoading ? (
+          <Typography variant="h6" sx={{ mt: 4 }}>
+            Loading...
+          </Typography>
+        ) : (
+          <Grid container spacing={3} sx={{ mt: 2 }}>
+            {filteredFreelancers.map((freelancer) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={freelancer.id}>
+                <FreelancerCard
+                  freelancer={freelancer}
+                  jobCount={
+                    jobs.filter((job) => job.userId === freelancer.id).length
+                  }
+                />
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </Container>
     </>
   );
