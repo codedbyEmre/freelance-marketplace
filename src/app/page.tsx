@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { Container, Grid } from "@mui/material";
-import { fetchFreelancers } from "../store/freelancerSlice";
+import { useEffect, useState } from "react";
+import { Container, Grid, Typography } from "@mui/material";
+import { fetchFreelancers, fetchJobs } from "../store/freelancerSlice";
 import FreelancerCard from "../components/FreelancerCard";
 import SearchFilters from "../components/SearchFilters";
 import Header from "../components/Header";
@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../store/store";
 
 export default function Home() {
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
   const freelancers = useAppSelector((state) => state.freelancer.freelancers);
   const filters = useAppSelector((state) => state.freelancer.searchFilters);
   const jobs = useAppSelector((state) => state.freelancer.jobs);
@@ -18,7 +19,20 @@ export default function Home() {
   );
 
   useEffect(() => {
-    dispatch(fetchFreelancers());
+    const loadData = async () => {
+      try {
+        await Promise.all([
+          dispatch(fetchFreelancers()),
+          dispatch(fetchJobs()),
+        ]);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error loading data:", error);
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
   }, [dispatch]);
 
   const filteredFreelancers = freelancers.filter((freelancer) => {
@@ -37,6 +51,17 @@ export default function Home() {
 
     return nameMatch && cityMatch && jobCountMatch && savedMatch;
   });
+
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Typography variant="h5">Loading...</Typography>
+        </Container>
+      </>
+    );
+  }
 
   return (
     <>
