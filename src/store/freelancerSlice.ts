@@ -1,6 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Freelancer, Job, Comment } from "../types/freelancer";
 
+// Get saved freelancers from localStorage
+const getSavedFreelancers = (): number[] => {
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem("savedFreelancers");
+    return saved ? JSON.parse(saved) : [];
+  }
+  return [];
+};
+
 interface FreelancerState {
   freelancers: Freelancer[];
   savedFreelancers: number[];
@@ -19,7 +28,7 @@ interface FreelancerState {
 
 const initialState: FreelancerState = {
   freelancers: [],
-  savedFreelancers: [],
+  savedFreelancers: getSavedFreelancers(),
   loading: false,
   error: null,
   jobs: [],
@@ -70,6 +79,13 @@ const freelancerSlice = createSlice({
         state.savedFreelancers.push(freelancerId);
       } else {
         state.savedFreelancers.splice(index, 1);
+      }
+      // Update localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          "savedFreelancers",
+          JSON.stringify(state.savedFreelancers)
+        );
       }
     },
     updateSearchFilters: (

@@ -6,6 +6,19 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { lightTheme, darkTheme } from "./theme";
 import { createContext, useContext } from "react";
 
+// Get theme preference from localStorage
+const getStoredTheme = (): boolean => {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("darkMode");
+    if (stored !== null) {
+      return JSON.parse(stored);
+    }
+    // If no stored preference, use system preference
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  return false;
+};
+
 interface ThemeContextType {
   toggleTheme: () => void;
   isDarkMode: boolean;
@@ -28,15 +41,15 @@ export default function ThemeRegistry({
 
   useEffect(() => {
     setMounted(true);
-    // Check for user's preferred theme
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    setIsDarkMode(prefersDark);
+    setIsDarkMode(getStoredTheme());
   }, []);
 
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("darkMode", JSON.stringify(newTheme));
+    }
   };
 
   if (!mounted) {
