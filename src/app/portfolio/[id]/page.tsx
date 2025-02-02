@@ -36,12 +36,12 @@ export default function PortfolioPage({ params }: PageProps) {
   const freelancerId = parseInt(resolvedParams.id);
 
   const freelancer = useAppSelector(
-    (state) => state.freelancer.currentFreelancer
+    (state) => state?.freelancer?.currentFreelancer
   );
   const jobs = useAppSelector(
-    (state) => state.freelancer.currentFreelancerJobs
+    (state) => state?.freelancer?.currentFreelancerJobs
   );
-  const comments = useAppSelector((state) => state.freelancer.comments);
+  const comments = useAppSelector((state) => state?.freelancer?.comments);
 
   const [expandedJob, setExpandedJob] = useState<number | null>(null);
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
@@ -71,17 +71,6 @@ export default function PortfolioPage({ params }: PageProps) {
     }
   };
 
-  if (!freelancer) {
-    return (
-      <>
-        <Header />
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Typography variant="h6">Freelancer not found</Typography>
-        </Container>
-      </>
-    );
-  }
-
   return (
     <>
       <Header />
@@ -100,28 +89,28 @@ export default function PortfolioPage({ params }: PageProps) {
                 }}
               >
                 <Avatar
-                  src={`https://i.pravatar.cc/150?u=${freelancer.id}`}
-                  alt={freelancer.name}
+                  src={`https://i.pravatar.cc/150?u=${freelancer?.id}`}
+                  alt={freelancer?.name}
                   sx={{ width: 200, height: 200, mr: 3 }}
                 />
                 <Box>
                   <Typography variant="h4" gutterBottom>
-                    {freelancer.name}
+                    {freelancer?.name}
                   </Typography>
                   <Typography color="text.secondary">
-                    Email: {freelancer.email}
+                    Email: {freelancer?.email}
                   </Typography>
                   <Typography color="text.secondary">
-                    Company: {freelancer.company.name}
+                    Company: {freelancer?.company?.name}
                   </Typography>
                   <Typography color="text.secondary">
-                    Phone: {freelancer.phone}
+                    Phone: {freelancer?.phone}
                   </Typography>
                   <Typography color="text.secondary">
-                    Website: {freelancer.website}
+                    Website: {freelancer?.website}
                   </Typography>
                   <Typography color="text.secondary">
-                    {freelancer.address.city}, {freelancer.address.zipcode}
+                    {freelancer?.address?.city}, {freelancer?.address?.zipcode}
                   </Typography>
                   <Button
                     variant="contained"
@@ -192,7 +181,7 @@ export default function PortfolioPage({ params }: PageProps) {
             <HireFreelancerModal
               open={isHireModalOpen}
               onClose={() => setIsHireModalOpen(false)}
-              freelancerName={freelancer.name}
+              freelancerName={freelancer?.name || ""}
             />
           </>
         )}
