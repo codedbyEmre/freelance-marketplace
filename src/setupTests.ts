@@ -31,7 +31,5 @@ global.localStorage = localStorageMock;
 
 // Add TextEncoder/TextDecoder to global
 global.TextEncoder = TextEncoder;
-(global as any).TextDecoder = TextDecoder;
-
-// Disable the no-explicit-any rule for this specific case
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).TextDecoder = TextDecoder;
