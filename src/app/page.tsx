@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Container, Grid, Typography } from "@mui/material";
+import { useEffect, useState, Suspense } from "react";
+import { Container, Grid, Typography, Skeleton } from "@mui/material";
 import { fetchFreelancers, fetchJobs } from "../store/freelancerSlice";
 import FreelancerCard from "../components/FreelancerCard";
 import SearchFilters from "../components/SearchFilters";
 import Header from "../components/Header";
 import { useAppDispatch, useAppSelector } from "../store/store";
+
+const FreelancerCardSkeleton = () => (
+  <Skeleton variant="rectangular" height={280} sx={{ borderRadius: 1 }} />
+);
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -19,20 +23,19 @@ export default function Home() {
   );
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        await Promise.all([
-          dispatch(fetchFreelancers()),
-          dispatch(fetchJobs()),
-        ]);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error loading data:", error);
-        setIsLoading(false);
-      }
+    const preloadData = () => {
+      const freelancersPromise = dispatch(fetchFreelancers());
+      const jobsPromise = dispatch(fetchJobs());
+
+      Promise.all([freelancersPromise, jobsPromise])
+        .then(() => setIsLoading(false))
+        .catch((error) => {
+          console.error("Error loading data:", error);
+          setIsLoading(false);
+        });
     };
 
-    loadData();
+    preloadData();
   }, [dispatch]);
 
   const filteredFreelancers = freelancers.filter((freelancer) => {
@@ -53,29 +56,30 @@ export default function Home() {
   });
 
   return (
-    <>
+    <Suspense fallback={<Typography>Loading...</Typography>}>
       <Header />
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <SearchFilters />
-        {isLoading ? (
-          <Typography variant="h6" sx={{ mt: 4 }}>
-            Loading...
-          </Typography>
-        ) : (
-          <Grid container spacing={3} sx={{ mt: 2 }}>
-            {filteredFreelancers.map((freelancer) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={freelancer.id}>
-                <FreelancerCard
-                  freelancer={freelancer}
-                  jobCount={
-                    jobs.filter((job) => job.userId === freelancer.id).length
-                  }
-                />
-              </Grid>
-            ))}
-          </Grid>
-        )}
+        <Grid container spacing={3} sx={{ mt: 2 }}>
+          {isLoading
+            ? // Show skeletons while loading
+              Array.from(new Array(8)).map((_, index) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                  <FreelancerCardSkeleton />
+                </Grid>
+              ))
+            : filteredFreelancers.map((freelancer) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={freelancer.id}>
+                  <FreelancerCard
+                    freelancer={freelancer}
+                    jobCount={
+                      jobs.filter((job) => job.userId === freelancer.id).length
+                    }
+                  />
+                </Grid>
+              ))}
+        </Grid>
       </Container>
-    </>
+    </Suspense>
   );
 }

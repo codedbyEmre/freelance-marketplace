@@ -1,17 +1,19 @@
 "use client";
 
+import { memo } from "react";
 import { Box, Typography, IconButton, Container } from "@mui/material";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { useTheme } from "../theme/ThemeRegistry";
 import { useRouter } from "next/navigation";
 
-export default function Header() {
+const Header = memo(function Header() {
   const { toggleTheme, isDarkMode } = useTheme();
   const router = useRouter();
 
   return (
     <Box
+      component="header"
       sx={{
         backgroundColor: "background.paper",
         borderBottom: 1,
@@ -29,8 +31,10 @@ export default function Header() {
       >
         <Typography
           variant="h5"
+          component="h1"
           sx={{
             cursor: "pointer",
+            fontWeight: 500,
             "&:hover": {
               opacity: 0.8,
             },
@@ -51,4 +55,6 @@ export default function Header() {
       </Container>
     </Box>
   );
-}
+});
+
+export default Header;

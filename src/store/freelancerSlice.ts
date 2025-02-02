@@ -10,6 +10,14 @@ const getSavedFreelancers = (): number[] => {
   return [];
 };
 
+interface SearchFilters {
+  name: string;
+  city: string;
+  minJobs: number;
+  maxJobs: number;
+  savedOnly: boolean;
+}
+
 interface FreelancerState {
   freelancers: Freelancer[];
   savedFreelancers: number[];
@@ -17,13 +25,9 @@ interface FreelancerState {
   error: string | null;
   jobs: Job[];
   comments: Comment[];
-  searchFilters: {
-    name: string;
-    minJobs: number;
-    maxJobs: number;
-    city: string;
-    savedOnly: boolean;
-  };
+  searchFilters: SearchFilters;
+  currentFreelancer: Freelancer | null;
+  currentFreelancerJobs: Job[];
 }
 
 const initialState: FreelancerState = {
@@ -35,11 +39,13 @@ const initialState: FreelancerState = {
   comments: [],
   searchFilters: {
     name: "",
+    city: "",
     minJobs: 0,
     maxJobs: 100,
-    city: "",
     savedOnly: false,
   },
+  currentFreelancer: null,
+  currentFreelancerJobs: [],
 };
 
 export const fetchFreelancers = createAsyncThunk(
@@ -65,6 +71,26 @@ export const fetchComments = createAsyncThunk(
     );
     const data = await response.json();
     return data;
+  }
+);
+
+export const fetchSingleFreelancer = createAsyncThunk(
+  "freelancer/fetchSingleFreelancer",
+  async (id: number) => {
+    const response = await fetch(
+      `https://jsonplaceholder.typicode.com/users/${id}`
+    );
+    return await response.json();
+  }
+);
+
+export const fetchFreelancerJobs = createAsyncThunk(
+  "freelancer/fetchFreelancerJobs",
+  async (userId: number) => {
+    const response = await fetch(
+      `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
+    );
+    return await response.json();
   }
 );
 
@@ -114,6 +140,12 @@ const freelancerSlice = createSlice({
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.comments = [...state.comments, ...action.payload];
+      })
+      .addCase(fetchSingleFreelancer.fulfilled, (state, action) => {
+        state.currentFreelancer = action.payload;
+      })
+      .addCase(fetchFreelancerJobs.fulfilled, (state, action) => {
+        state.currentFreelancerJobs = action.payload;
       });
   },
 });

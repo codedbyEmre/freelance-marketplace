@@ -3,9 +3,9 @@
 import { useEffect, useState, use } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/store";
 import {
-  fetchJobs,
+  fetchSingleFreelancer,
+  fetchFreelancerJobs,
   fetchComments,
-  fetchFreelancers,
 } from "../../../store/freelancerSlice";
 import {
   Container,
@@ -34,13 +34,14 @@ export default function PortfolioPage({ params }: PageProps) {
   const dispatch = useAppDispatch();
   const resolvedParams = use(params);
   const freelancerId = parseInt(resolvedParams.id);
-  const freelancer = useAppSelector((state) =>
-    state?.freelancer?.freelancers?.find((f) => f.id === freelancerId)
+
+  const freelancer = useAppSelector(
+    (state) => state.freelancer.currentFreelancer
   );
-  const jobs = useAppSelector((state) =>
-    state?.freelancer?.jobs?.filter((job) => job.userId === freelancerId)
+  const jobs = useAppSelector(
+    (state) => state.freelancer.currentFreelancerJobs
   );
-  const comments = useAppSelector((state) => state?.freelancer?.comments);
+  const comments = useAppSelector((state) => state.freelancer.comments);
 
   const [expandedJob, setExpandedJob] = useState<number | null>(null);
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
@@ -49,10 +50,8 @@ export default function PortfolioPage({ params }: PageProps) {
   useEffect(() => {
     const loadData = async () => {
       try {
-        await Promise.all([
-          dispatch(fetchFreelancers()),
-          dispatch(fetchJobs()),
-        ]);
+        await dispatch(fetchSingleFreelancer(freelancerId));
+        await dispatch(fetchFreelancerJobs(freelancerId));
         setIsLoading(false);
       } catch (error) {
         console.error("Error loading data:", error);
@@ -61,7 +60,7 @@ export default function PortfolioPage({ params }: PageProps) {
     };
 
     loadData();
-  }, [dispatch]);
+  }, [dispatch, freelancerId]);
 
   const handleShowComments = async (jobId: number) => {
     if (expandedJob === jobId) {
