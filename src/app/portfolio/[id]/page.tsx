@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/store";
-import { fetchJobs, fetchComments } from "../../../store/freelancerSlice";
+import {
+  fetchJobs,
+  fetchComments,
+  fetchFreelancers,
+} from "../../../store/freelancerSlice";
 import {
   Container,
   Paper,
@@ -20,7 +24,6 @@ import {
 } from "@mui/material";
 import HireFreelancerModal from "../../../components/HireFreelancerModal";
 import { Comment, Job } from "../../../types/freelancer";
-import { use } from "react";
 import Header from "../../../components/Header";
 
 interface PageProps {
@@ -28,22 +31,36 @@ interface PageProps {
 }
 
 export default function PortfolioPage({ params }: PageProps) {
-  const resolvedParams = use(params);
   const dispatch = useAppDispatch();
+  const resolvedParams = use(params);
   const freelancerId = parseInt(resolvedParams.id);
   const freelancer = useAppSelector((state) =>
-    state.freelancer.freelancers.find((f) => f.id === freelancerId)
+    state?.freelancer?.freelancers?.find((f) => f.id === freelancerId)
   );
   const jobs = useAppSelector((state) =>
-    state.freelancer.jobs.filter((job) => job.userId === freelancerId)
+    state?.freelancer?.jobs?.filter((job) => job.userId === freelancerId)
   );
-  const comments = useAppSelector((state) => state.freelancer.comments);
+  const comments = useAppSelector((state) => state?.freelancer?.comments);
 
   const [expandedJob, setExpandedJob] = useState<number | null>(null);
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(fetchJobs());
+    const loadData = async () => {
+      try {
+        await Promise.all([
+          dispatch(fetchFreelancers()),
+          dispatch(fetchJobs()),
+        ]);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error loading data:", error);
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
   }, [dispatch]);
 
   const handleShowComments = async (jobId: number) => {
@@ -55,8 +72,26 @@ export default function PortfolioPage({ params }: PageProps) {
     }
   };
 
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Typography variant="h5">Loading...</Typography>
+        </Container>
+      </>
+    );
+  }
+
   if (!freelancer) {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <Header />
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Typography variant="h6">Freelancer not found</Typography>
+        </Container>
+      </>
+    );
   }
 
   return (
@@ -113,7 +148,7 @@ export default function PortfolioPage({ params }: PageProps) {
                   {comments
                     .filter((comment: Comment) => comment.postId === job.id)
                     .map((comment: Comment) => (
-                      <ListItem key={`${job.id}-${comment.id}`} divider>
+                      <ListItem key={comment.id} divider>
                         <ListItemText
                           primary={comment.name}
                           secondary={
