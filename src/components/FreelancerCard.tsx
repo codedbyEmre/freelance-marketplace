@@ -40,22 +40,30 @@ export default function FreelancerCard({
   };
 
   return (
-    <Card sx={{ maxWidth: 345, m: 2 }}>
-      <CardContent>
-        <div style={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
+    <Card
+      elevation={2}
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        p: 1,
+      }}
+    >
+      <CardContent sx={{ flexGrow: 1, pb: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
           <Avatar
             src={`https://i.pravatar.cc/150?u=${freelancer.id}`}
-            sx={{ width: 60, height: 60, marginRight: 2 }}
+            sx={{ width: 60, height: 60, marginRight: 1 }}
           />
           <div>
-            <Typography gutterBottom variant="h6" component="div">
+            <Typography gutterBottom variant="body1" component="div">
               {freelancer.name}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {freelancer.email}
             </Typography>
           </div>
         </div>
+        <Typography variant="body2" color="text.secondary">
+          {freelancer.email}
+        </Typography>
         <Typography variant="body2" color="text.secondary">
           Phone: {freelancer.phone}
         </Typography>
@@ -66,16 +74,16 @@ export default function FreelancerCard({
           Completed Jobs: {jobCount}
         </Typography>
       </CardContent>
-      <CardActions>
+      <CardActions sx={{ pt: 0, justifyContent: "space-between" }}>
         <Button size="small" onClick={handleViewProfile}>
-          View Profile
+          VIEW PROFILE
         </Button>
         <Button
           size="small"
           onClick={handleSave}
           startIcon={isSaved ? <BookmarkIcon /> : <BookmarkBorderIcon />}
         >
-          {isSaved ? "Saved" : "Save"}
+          {isSaved ? "SAVED" : "SAVE"}
         </Button>
       </CardActions>
     </Card>

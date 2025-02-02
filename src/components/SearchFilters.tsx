@@ -3,22 +3,17 @@
 import {
   Paper,
   TextField,
-  Slider,
   FormControlLabel,
   Switch,
   Box,
+  Typography,
 } from "@mui/material";
 import { updateSearchFilters } from "../store/freelancerSlice";
-import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
 
 export default function SearchFilters() {
   const dispatch = useAppDispatch();
   const filters = useAppSelector((state) => state.freelancer.searchFilters);
-  const [jobRange, setJobRange] = useState<number[]>([
-    filters.minJobs,
-    filters.maxJobs,
-  ]);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(updateSearchFilters({ name: event.target.value }));
@@ -28,10 +23,14 @@ export default function SearchFilters() {
     dispatch(updateSearchFilters({ city: event.target.value }));
   };
 
-  const handleJobRangeChange = (_event: Event, newValue: number | number[]) => {
-    const [min, max] = newValue as number[];
-    setJobRange([min, max]);
-    dispatch(updateSearchFilters({ minJobs: min, maxJobs: max }));
+  const handleMinJobsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Math.max(0, parseInt(event.target.value) || 0);
+    dispatch(updateSearchFilters({ minJobs: value }));
+  };
+
+  const handleMaxJobsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Math.max(filters.minJobs, parseInt(event.target.value) || 0);
+    dispatch(updateSearchFilters({ maxJobs: value }));
   };
 
   const handleSavedOnlyChange = (
@@ -41,14 +40,15 @@ export default function SearchFilters() {
   };
 
   return (
-    <Paper sx={{ p: 2, mb: 2 }}>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <Paper sx={{ p: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         <TextField
           label="Search by name"
           variant="outlined"
           value={filters.name}
           onChange={handleNameChange}
           size="small"
+          sx={{ flex: 1 }}
         />
         <TextField
           label="Search by city"
@@ -56,15 +56,31 @@ export default function SearchFilters() {
           value={filters.city}
           onChange={handleCityChange}
           size="small"
+          sx={{ flex: 1 }}
         />
-        <Box sx={{ px: 2 }}>
-          <p>Completed Jobs Range</p>
-          <Slider
-            value={jobRange}
-            onChange={handleJobRangeChange}
-            valueLabelDisplay="auto"
-            min={0}
-            max={100}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+            Jobs:
+          </Typography>
+          <TextField
+            label="Min"
+            type="number"
+            variant="outlined"
+            value={filters.minJobs}
+            onChange={handleMinJobsChange}
+            size="small"
+            InputProps={{ inputProps: { min: 0 } }}
+            sx={{ width: 100 }}
+          />
+          <TextField
+            label="Max"
+            type="number"
+            variant="outlined"
+            value={filters.maxJobs}
+            onChange={handleMaxJobsChange}
+            size="small"
+            InputProps={{ inputProps: { min: filters.minJobs } }}
+            sx={{ width: 100 }}
           />
         </Box>
         <FormControlLabel
@@ -74,7 +90,8 @@ export default function SearchFilters() {
               onChange={handleSavedOnlyChange}
             />
           }
-          label="Show saved freelancers only"
+          label="Show saved only"
+          sx={{ ml: 1 }}
         />
       </Box>
     </Paper>

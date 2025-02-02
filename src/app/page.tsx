@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Container, Grid, Box, IconButton } from "@mui/material";
+import { Container, Grid, Box, IconButton, Typography } from "@mui/material";
 import { fetchFreelancers } from "../store/freelancerSlice";
 import FreelancerCard from "../components/FreelancerCard";
 import SearchFilters from "../components/SearchFilters";
@@ -16,6 +16,9 @@ export default function Home() {
   const freelancers = useAppSelector((state) => state.freelancer.freelancers);
   const filters = useAppSelector((state) => state.freelancer.searchFilters);
   const jobs = useAppSelector((state) => state.freelancer.jobs);
+  const savedFreelancers = useAppSelector(
+    (state) => state.freelancer.savedFreelancers
+  );
 
   useEffect(() => {
     dispatch(fetchFreelancers());
@@ -32,14 +35,23 @@ export default function Home() {
     const jobCountMatch =
       jobCount >= filters.minJobs && jobCount <= filters.maxJobs;
     const savedMatch =
-      !filters.savedOnly || (filters.savedOnly && freelancer.id in freelancers);
+      !filters.savedOnly ||
+      (filters.savedOnly && savedFreelancers.includes(freelancer.id));
 
     return nameMatch && cityMatch && jobCountMatch && savedMatch;
   });
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Typography variant="h5">Freelance Marketplace</Typography>
         <IconButton onClick={toggleTheme} color="inherit">
           {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
         </IconButton>
@@ -47,9 +59,9 @@ export default function Home() {
 
       <SearchFilters />
 
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ mt: 2 }}>
         {filteredFreelancers.map((freelancer) => (
-          <Grid item xs={12} sm={6} md={4} key={freelancer.id}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={freelancer.id}>
             <FreelancerCard
               freelancer={freelancer}
               jobCount={

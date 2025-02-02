@@ -21,10 +21,16 @@ import {
 } from "@mui/material";
 import HireFreelancerModal from "../../../components/HireFreelancerModal";
 import { Comment, Job } from "../../../types/freelancer";
+import { use } from "react";
 
-export default function PortfolioPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default function PortfolioPage({ params }: PageProps) {
+  const resolvedParams = use(params);
   const dispatch = useAppDispatch();
-  const freelancerId = parseInt(params.id);
+  const freelancerId = parseInt(resolvedParams.id);
   const freelancer = useAppSelector((state) =>
     state.freelancer.freelancers.find((f) => f.id === freelancerId)
   );
@@ -105,27 +111,24 @@ export default function PortfolioPage({ params }: { params: { id: string } }) {
                 {comments
                   .filter((comment: Comment) => comment.postId === job.id)
                   .map((comment: Comment) => (
-                    <div key={comment.id}>
-                      <ListItem>
-                        <ListItemText
-                          primary={comment.name}
-                          secondary={
-                            <>
-                              <Typography
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                              >
-                                {comment.email}
-                              </Typography>
-                              {" — "}
-                              {comment.body}
-                            </>
-                          }
-                        />
-                      </ListItem>
-                      <Divider component="li" />
-                    </div>
+                    <ListItem key={`${job.id}-${comment.id}`} divider>
+                      <ListItemText
+                        primary={comment.name}
+                        secondary={
+                          <>
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              color="text.primary"
+                            >
+                              {comment.email}
+                            </Typography>
+                            {" — "}
+                            {comment.body}
+                          </>
+                        }
+                      />
+                    </ListItem>
                   ))}
               </List>
             </CardContent>
