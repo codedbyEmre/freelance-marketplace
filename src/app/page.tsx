@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { Container, Grid, Typography, Skeleton, Box } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import { fetchFreelancers, fetchJobs } from "../store/freelancerSlice";
 import FreelancerCard from "../components/FreelancerCard";
 import SearchFilters from "../components/SearchFilters";

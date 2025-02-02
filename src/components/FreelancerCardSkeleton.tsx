@@ -1,6 +1,6 @@
 "use client";
 
-import { Container, Grid, Typography, Skeleton, Box } from "@mui/material";
+import { Skeleton, Box } from "@mui/material";
 
 const FreelancerCardSkeleton = () => {
   return (
